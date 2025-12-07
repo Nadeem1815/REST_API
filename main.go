@@ -3,11 +3,13 @@ package main
 import (
 	"net/http"
 
+	"github.com/Nadeem1815/rest-api/db"
 	"github.com/Nadeem1815/rest-api/models"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	db.InitDB()
 	server := gin.Default()
 
 	server.GET("/events", GetEvents) //GET, POST, PATH, DELETE
@@ -33,10 +35,11 @@ func CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	event.ID = 1
-	event.UserID = 1
+	// event.ID = 1
+	// event.UserID = 1
 
 	event.Save()
+
 	ctx.JSON(http.StatusCreated, gin.H{
 		"massage": "event created",
 		"event":   event,

@@ -2,7 +2,10 @@ module github.com/Nadeem1815/rest-api
 
 go 1.23.4
 
-require github.com/gin-gonic/gin v1.11.0
+require (
+	github.com/gin-gonic/gin v1.11.0
+	github.com/mattn/go-sqlite3 v1.14.32
+)
 
 require (
 	github.com/bytedance/sonic v1.14.0 // indirect
