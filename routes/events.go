@@ -67,3 +67,43 @@ func CreateEvent(ctx *gin.Context) {
 	})
 
 }
+
+func UpdateEvent(ctx *gin.Context) {
+
+	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"massage": "could not parse event id.",
+		})
+		return
+	}
+
+	_, err = models.GetEventByID(eventId)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"massage": "could not fetch the event",
+		})
+		return
+	}
+
+	var UpdatedEvent models.Event
+	if err = ctx.BindJSON(&UpdatedEvent); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"massage": "could not parse the data",
+		})
+		return
+
+	}
+
+	UpdatedEvent.ID = eventId
+	err = UpdatedEvent.Update()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"massage": "could not update event.",
+		})
+		return
+
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"massage": "Event updated successfully."})
+}
