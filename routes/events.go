@@ -107,3 +107,32 @@ func UpdateEvent(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"massage": "Event updated successfully."})
 }
+
+func DeleteEvent(ctx *gin.Context) {
+
+	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"massage": "could not parse event id.",
+		})
+		return
+	}
+
+	event, err := models.GetEventByID(eventId)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"massage": "could not fetch the event",
+		})
+		return
+	}
+	if err = event.Delete(); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"massage": "Could not delete the event.",
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"massage": " Event Successfully Deleted",
+	})
+
+}
