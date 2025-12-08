@@ -33,7 +33,7 @@ func createTables() {
 		)
 		`
 
-	_, err := DB.Exec(createEventsTabel)
+	_, err := DB.Exec(createEventsTabel) //teble created db.Exec
 
 	if err != nil {
 		panic("could not create events table")
