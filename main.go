@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/Nadeem1815/rest-api/db"
 	"github.com/Nadeem1815/rest-api/models"
@@ -13,6 +14,7 @@ func main() {
 	server := gin.Default()
 
 	server.GET("/events", GetEvents) //GET, POST, PATH, DELETE
+	server.GET("/events/:id", getEvent)
 	server.POST("/events", CreateEvent)
 
 	server.Run(":8080") // localhost:8080
@@ -26,6 +28,27 @@ func GetEvents(ctx *gin.Context) {
 		})
 	}
 	ctx.JSON(http.StatusOK, events)
+}
+
+func getEvent(ctx *gin.Context) {
+
+	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"massage": "could not parse event id.",
+		})
+		return
+	}
+
+	event, err := models.GetEventByID(eventId)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"massage": "could not fetch events. try again later",
+		})
+
+	}
+	ctx.JSON(http.StatusOK, event)
+
 }
 
 func CreateEvent(ctx *gin.Context) {
