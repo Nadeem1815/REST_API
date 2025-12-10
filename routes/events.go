@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/Nadeem1815/rest-api/models"
+	"github.com/Nadeem1815/rest-api/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -40,9 +41,24 @@ func getEvent(ctx *gin.Context) {
 }
 
 func CreateEvent(ctx *gin.Context) {
+	token := ctx.Request.Header.Get("Authorization")
+
+	if token == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"massage": "not authorized",
+		})
+		return
+	}
+
+	userId, err := utils.VerifyToken(token)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"massage": "NOT AUTHORIZED"})
+		return
+	}
+
 	var event models.Event
 
-	err := ctx.BindJSON(&event)
+	err = ctx.BindJSON(&event)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -52,7 +68,7 @@ func CreateEvent(ctx *gin.Context) {
 	}
 
 	// event.ID = 1
-	event.UserID = 1
+	event.UserID = userId
 
 	if err = event.Save(); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
