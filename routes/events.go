@@ -94,10 +94,18 @@ func UpdateEvent(ctx *gin.Context) {
 		return
 	}
 
-	_, err = models.GetEventByID(eventId)
+	userId := ctx.GetInt64("userId")
+	event, err := models.GetEventByID(eventId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"massage": "could not fetch the event",
+		})
+		return
+	}
+
+	if event.UserID != userId {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"massage": "Not authorized to update event",
 		})
 		return
 	}
@@ -134,6 +142,7 @@ func DeleteEvent(ctx *gin.Context) {
 		return
 	}
 
+	userId := ctx.GetInt64("userId")
 	event, err := models.GetEventByID(eventId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -141,6 +150,14 @@ func DeleteEvent(ctx *gin.Context) {
 		})
 		return
 	}
+
+	if event.UserID != userId {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"massage": "Not authorized to update event",
+		})
+		return
+	}
+
 	if err = event.Delete(); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"massage": "Could not delete the event.",
