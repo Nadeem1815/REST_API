@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/Nadeem1815/rest-api/models"
-	"github.com/Nadeem1815/rest-api/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,24 +40,24 @@ func getEvent(ctx *gin.Context) {
 }
 
 func CreateEvent(ctx *gin.Context) {
-	token := ctx.Request.Header.Get("Authorization")
+	// token := ctx.Request.Header.Get("Authorization")
 
-	if token == "" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{
-			"massage": "not authorized",
-		})
-		return
-	}
+	// if token == "" {
+	// 	ctx.JSON(http.StatusUnauthorized, gin.H{
+	// 		"massage": "not authorized",
+	// 	})
+	// 	return
+	// }
 
-	userId, err := utils.VerifyToken(token)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"massage": "NOT AUTHORIZED"})
-		return
-	}
+	// userId, err := utils.VerifyToken(token)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusUnauthorized, gin.H{"massage": "NOT AUTHORIZED"})
+	// 	return
+	// }
 
 	var event models.Event
 
-	err = ctx.BindJSON(&event)
+	err := ctx.BindJSON(&event)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -67,6 +66,7 @@ func CreateEvent(ctx *gin.Context) {
 		return
 	}
 
+	userId := ctx.GetInt64("userId")
 	// event.ID = 1
 	event.UserID = userId
 
