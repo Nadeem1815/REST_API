@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Nadeem1815/rest-api/models"
+	"github.com/Nadeem1815/rest-api/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -48,8 +49,17 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
+	token, err := utils.GenerateToke(user.Email, user.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"massage": "could not authinticate user",
+		})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"massage": "Login successfull",
+		"token":   token,
 	})
 
 }
