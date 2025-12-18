@@ -1,10 +1,2 @@
-
-POST http://localhost:8080/login
-Content-Type: application/json
-
-{
-    
-    "email":"test@example.com",
-    "password": "test"
-
-}
+POST http://localhost:8080/events/1/register
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZhaGFkQGV4YW1wbGUuY29tIiwiZXhwIjoxNzY1NjM5MDE2LCJ1c2VySWQiOjJ9.-rX6edd0zxLTtpOGnEniVt4H1z5lu0bnvH3IwNWXuUU
